@@ -13,29 +13,32 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     if (!email || !password) return alert("Preencha tudo!");
-
     setLoading(true);
+
     try {
       const response = await api.post("/signin", { email, password });
-
-      // Como seu handleREST encapsula, o status real do erro vem aqui dentro:
       const { status, error, data } = response.data;
 
-      // SE O STATUS NÃO FOR 200 OU SE HOUVER ERRO, PARAMOS TUDO
       if (status !== 200 || error) {
         alert(error || "Erro ao realizar login");
-        setLoading(false);
         return;
       }
 
-      const activeToken = data.token;
-      if (activeToken) {
-        localStorage.setItem("@App:token", activeToken);
-        api.defaults.headers.Authorization = `Bearer ${activeToken}`;
-        navigate("/schedules");
+      if (data.token) {
+        localStorage.setItem("@App:token", data.token);
+        localStorage.setItem("@App:role", data.user.role);
+        localStorage.setItem("@App:userId", data.user.userId);
+
+        api.defaults.headers.Authorization = `Bearer ${data.token}`;
+
+        if (data.user.role === "admin") {
+          navigate("/schedules", { replace: true });
+        } else {
+          navigate("/my-schedules", { replace: true });
+        }
       }
-    } catch (error: any) {
-      alert("Erro de conexão com o servidor.");
+    } catch (error) {
+      alert("Erro ao conectar.");
     } finally {
       setLoading(false);
     }

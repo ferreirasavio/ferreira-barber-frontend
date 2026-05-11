@@ -4,10 +4,26 @@ const api = axios.create({
   baseURL: "http://localhost:3000",
 });
 
-const token = localStorage.getItem("@App:token");
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("@App:token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-if (token) {
-  api.defaults.headers.Authorization = `Bearer ${token}`;
-}
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // 1. Limpa o token inválido
+      localStorage.removeItem("@App:token");
+
+      // 2. Força o redirecionamento para o login
+      window.location.href = "/signin";
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default api;
