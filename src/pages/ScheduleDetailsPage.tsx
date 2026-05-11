@@ -6,6 +6,7 @@ import Title from "../components/Title";
 import api from "../services/api";
 import { formatDateTime } from "../utils/formatDate";
 import { formatPhone } from "../utils/formatPhone";
+
 type SchedulesProps = {
   id: string;
   name: string;
@@ -13,8 +14,24 @@ type SchedulesProps = {
   scheduled_at: string;
   type_cut: "cabelo" | "barba" | "cabelo e barba";
 };
-export default function SchedulePage() {
+
+export default function ScheduleDetailsPage() {
   const navigate = useNavigate();
+  const userId = localStorage.getItem("@App:userId");
+  console.log("user", userId);
+  const {
+    data: schedules,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["my-schedules", userId],
+    queryFn: async () => {
+      const response = await api.get("/my-schedules", {
+        params: { userId },
+      });
+      return response.data.data;
+    },
+  });
 
   const myColumns: ColumnConfig<SchedulesProps>[] = [
     { header: "Nome", key: "name" },
@@ -27,24 +44,12 @@ export default function SchedulePage() {
     { header: "Corte", key: "type_cut" },
   ];
 
-  const {
-    data: schedules,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["schedules"],
-    queryFn: async () => {
-      const response = await api.get("/schedules");
-      return response.data.data;
-    },
-  });
-
   function onCreateSchedule() {
     navigate("/create-schedule");
   }
 
   return isLoading ? (
-    <Title title="Horários agendados" />
+    <Title title="Carregando" />
   ) : (
     <>
       <Table
