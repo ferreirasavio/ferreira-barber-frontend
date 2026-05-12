@@ -57,7 +57,7 @@ export default function LoginPage() {
       <Input
         title="Senha"
         placeholder="Digite sua senha"
-        type="text"
+        type="password"
         value={password}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setPassword(e.target.value)
