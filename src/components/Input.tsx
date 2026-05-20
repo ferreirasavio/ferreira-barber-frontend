@@ -20,7 +20,7 @@ export default function Input({
     "w-full border border-gray-300 px-2 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   const isPassword = type === "password";
-  const inputTypeFinal = isPassword
+  const checkInputType = isPassword
     ? showPassword
       ? "text"
       : "password"
@@ -46,7 +46,7 @@ export default function Input({
       ) : (
         <div className="relative w-full">
           <input
-            type={inputTypeFinal}
+            type={checkInputType}
             className={`${baseStyle} ${isPassword ? "pr-10" : ""}`}
             {...(props as any)}
           />

@@ -12,7 +12,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  async function handleRegister() {
+  const handleRegister = async () => {
     if (!name || !email || !password) {
       return alert("Todos os campos precisam ser preenchidos!");
     }
@@ -33,7 +33,7 @@ export default function RegisterPage() {
     } finally {
       setLoading(false);
     }
-  }
+  };
   return (
     <Card>
       <Input
