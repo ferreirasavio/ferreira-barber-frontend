@@ -83,15 +83,16 @@ export default function CreateSchedule() {
 
   const scheduleMutation = useMutation({
     mutationFn: async () => {
-      const scheduledAt = new Date(`${date}T${time}:00`);
-
-      if (scheduledAt.getTime() < Date.now() && !isEditing) {
+      const validationDate = new Date(`${date}T${time}:00`);
+      if (validationDate.getTime() < Date.now() && !isEditing) {
         throw new Error("Você não pode escolher um horário que já passou.");
       }
+
+      const formattedIsoDate = `${date}T${time}:00`;
       const payload = {
         name,
         phone,
-        scheduled_at: scheduledAt.toISOString(),
+        scheduled_at: formattedIsoDate,
         type_cut: typeCut.toLowerCase(),
       };
 
@@ -108,6 +109,7 @@ export default function CreateSchedule() {
       }
 
       queryClient.invalidateQueries({ queryKey: ["schedules"] });
+      queryClient.invalidateQueries({ queryKey: ["my-schedules"] });
       alert(isEditing ? "Agendamento atualizado!" : "Agendamento realizado!");
       role !== "admin" ? navigate("/my-schedules") : navigate("/schedules");
     },

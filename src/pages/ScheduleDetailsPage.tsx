@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Table, { ColumnConfig } from "../components/Table";
@@ -17,8 +17,9 @@ type SchedulesProps = {
 
 export default function ScheduleDetailsPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const userId = localStorage.getItem("@App:userId");
-  console.log("user", userId);
+
   const {
     data: schedules,
     isLoading,
@@ -48,6 +49,31 @@ export default function ScheduleDetailsPage() {
     navigate("/create-schedule");
   }
 
+  const onDeleteSchedule = async (id: string | number) => {
+    try {
+      const hasConfirmed = window.confirm(
+        "Tem certeza que deseja remover esse agendamento?",
+      );
+
+      if (!hasConfirmed) return;
+
+      await api.delete(`/schedules/${id}`);
+      queryClient.invalidateQueries({ queryKey: ["my-schedules"] });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onEditSchedule = (id: string | number) => {
+    const scheduleToEdit = schedules?.find(
+      (item: SchedulesProps) => item.id === id,
+    );
+
+    if (scheduleToEdit) {
+      navigate("/create-schedule", { state: { scheduleData: scheduleToEdit } });
+    }
+  };
+
   return isLoading ? (
     <Title title="Carregando" />
   ) : (
@@ -57,6 +83,8 @@ export default function ScheduleDetailsPage() {
         title="Meus horários agendados"
         columns={myColumns}
         isError={isError}
+        onDeleteItem={onDeleteSchedule}
+        onEditItem={onEditSchedule}
       />
       <div className="flex flex-col items-end">
         <Button onClick={onCreateSchedule}>Fazer agendamento</Button>
