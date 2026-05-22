@@ -20,7 +20,7 @@ export default function LoginPage() {
       const { status, error, data } = response.data;
 
       if (status !== 200 || error) {
-        alert(error || "Erro ao realizar login");
+        alert("Erro ao realizar login");
         return;
       }
 
