@@ -14,6 +14,7 @@ import CreateSchedule from "./pages/CreateSchedule.tsx";
 import ForgotPassword from "./pages/ForgotPassword.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 import ScheduleDetailsPage from "./pages/ScheduleDetailsPage.tsx";
 import SchedulePage from "./pages/SchedulePage.tsx";
 
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       { path: "/signup", element: <RegisterPage /> },
       { path: "/signin", element: <LoginPage /> },
       { path: "/forgot-password", element: <ForgotPassword /> },
+      { path: "/reset-password", element: <ResetPassword /> },
     ],
   },
 
