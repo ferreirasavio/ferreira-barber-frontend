@@ -65,9 +65,8 @@ export default function Table<T extends BaseData>({
     <div className="pb-6 w-full">
       <Title title={title} />
 
-      {/* Design moderno: shadow sutil, sem bordas verticais grossas */}
-      <div className="overflow-hidden border border-slate-200 rounded-lg shadow-sm">
-        <table className="w-full border-collapse bg-white text-left text-sm text-slate-600">
+      <div className="w-full overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
+        <table className="min-w-full border-collapse bg-white text-left text-sm text-slate-600">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
               {columns.map((col, index) => (

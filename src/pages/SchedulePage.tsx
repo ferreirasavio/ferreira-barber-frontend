@@ -46,6 +46,12 @@ export default function SchedulePage() {
 
   const onDeleteSchedule = async (id: string | number) => {
     try {
+      const hasConfirmed = window.confirm(
+        "Tem certeza que deseja remover esse agendamento?",
+      );
+
+      if (!hasConfirmed) return;
+
       await api.delete(`/schedules/${id}`);
       queryClient.invalidateQueries({ queryKey: ["schedules"] });
     } catch (error) {
