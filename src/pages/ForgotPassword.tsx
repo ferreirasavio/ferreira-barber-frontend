@@ -1,48 +1,65 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// 1. IMPORTADO O 'useSearchParams' AQUI
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import Input from "../components/Input";
+import api from "../services/api";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState<string>();
-  const [newPassword, setNewPassword] = useState<string>();
-  const [codeSent, setCodeSent] = useState(false);
+  const [code, setCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const NewPassword = () => {
-    return (
-      <Card>
-        <p className="text-base text-slate-400 text-start">
-          Insira o código e sua nova senha
-        </p>
-        <Input
-          type="number"
-          title="Código"
-          placeholder="Digite o código"
-          value={code}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setCode(e.target.value)
-          }
-        />
-        <Input
-          type="text"
-          title="Nova senha"
-          placeholder="Digite a nova senha"
-          value={newPassword}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setNewPassword(e.target.value)
-          }
-        />
-        <Button onClick={() => navigate("/signin")}>Enviar</Button>
-      </Card>
-    );
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token") || "";
+
+  const [showResetForm, setShowResetForm] = useState(!!token);
+
+  const onSendToken = async () => {
+    if (!email) return alert("Preencha o campo!");
+    setLoading(true);
+    try {
+      const response = await api.post("/requestToken", { email });
+      if (!response.data) {
+        alert("Algo deu errado");
+        return;
+      }
+      setShowResetForm(true);
+    } catch (error) {
+      console.log(error);
+      alert("Erro ao solicitar código.");
+    } finally {
+      setLoading(false);
+    }
   };
-  return !codeSent ? (
+
+  const onChangePassword = async () => {
+    if (!code || !newPassword) return alert("Preencha todos os campos!");
+    setLoading(true);
+    try {
+      await api.post("/resetPassword", {
+        token,
+        code,
+        newPassword,
+      });
+
+      alert("Senha alterada com sucesso!");
+      navigate("/signin");
+    } catch (error: any) {
+      console.log(error);
+      alert(error.response?.data?.error || "Algo deu errado");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return !showResetForm ? (
     <Card>
       <p className="text-base text-slate-400 text-start">
-        Insira o e-mail que precisa receber o código de para resetar sua senha.
+        Insira o e-mail que precisa receber o código para resetar sua senha.
       </p>
       <Input
         type="email"
@@ -53,9 +70,36 @@ export default function ForgotPassword() {
           setEmail(e.target.value)
         }
       />
-      <Button onClick={() => setCodeSent(!codeSent)}>Enviar</Button>
+      <Button disabled={loading} onClick={onSendToken}>
+        {loading ? "Carregando..." : "Enviar"}
+      </Button>
     </Card>
   ) : (
-    <NewPassword />
+    <Card>
+      <p className="text-base text-slate-400 text-start">
+        Insira o código e sua nova senha
+      </p>
+      <Input
+        type="text"
+        title="Código"
+        placeholder="Digite o código"
+        value={code}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setCode(e.target.value)
+        }
+      />
+      <Input
+        type="password"
+        title="Nova senha"
+        placeholder="Digite a nova senha"
+        value={newPassword}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setNewPassword(e.target.value)
+        }
+      />
+      <Button disabled={loading} onClick={onChangePassword}>
+        {loading ? "Carregando..." : "Enviar"}
+      </Button>
+    </Card>
   );
 }
