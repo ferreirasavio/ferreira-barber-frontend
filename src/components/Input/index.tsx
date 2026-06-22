@@ -1,11 +1,6 @@
 import { Eye, EyeOff } from "lucide-react"; // Sugestão de biblioteca de ícones
-import { InputHTMLAttributes, useState } from "react";
-
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  title?: string;
-  inputType?: "select" | "other";
-  listOptions?: string[];
-}
+import { useState } from "react";
+import { InputProps } from "./types";
 
 export default function Input({
   title,

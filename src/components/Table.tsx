@@ -5,8 +5,8 @@ import {
   Trash2,
 } from "lucide-react"; // Adicionados ícones de ação
 import { useState } from "react";
-import Button from "../components/Button";
 import Title from "../components/Title";
+import Button from "./Button";
 
 export interface ColumnConfig<T> {
   header: string;

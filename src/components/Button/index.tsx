@@ -1,8 +1,4 @@
-type ButtonProps = {
-  onClick: () => void;
-  children?: React.ReactElement | string | number;
-  disabled?: boolean;
-};
+import { ButtonProps } from "./types";
 
 export default function Button(props: ButtonProps) {
   return (
