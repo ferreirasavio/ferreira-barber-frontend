@@ -53,13 +53,27 @@ const router = createBrowserRouter([
             ),
           },
           // 2. Rotas de Usuário Comum
-          { path: "/create-schedule", element: <CreateSchedule /> },
-          { path: "/my-schedules", element: <ScheduleDetailsPage /> },
+          {
+            path: "/create-schedule",
+            element: <CreateSchedule />,
+            handle: { crumb: "Marcar horário" },
+          },
+          {
+            path: "/my-schedules",
+            element: <ScheduleDetailsPage />,
+            handle: { crumb: "Meus agendamentos" },
+          },
 
           // 3. Rotas Restritas de Admin (Ainda dentro do Layout)
           {
             element: <PrivateRoute allowedRoles={["admin"]} />,
-            children: [{ path: "/schedules", element: <SchedulePage /> }],
+            children: [
+              {
+                path: "/schedules",
+                element: <SchedulePage />,
+                handle: { crumb: "Agendamentos" },
+              },
+            ],
           },
         ],
       },

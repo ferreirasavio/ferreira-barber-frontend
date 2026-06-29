@@ -2,6 +2,7 @@
 import { LogOut } from "lucide-react"; // Opcional: ícone legal
 import { Outlet, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { Breadcrumbs } from "./Breadcrumb";
 
 export function Layout() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ export function Layout() {
       </header>
 
       <main className="flex-1 w-full px-6 py-4">
+        <Breadcrumbs />
         <Outlet />
       </main>
     </div>
